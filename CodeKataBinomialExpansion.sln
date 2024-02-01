@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34511.84
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeKataBinomialExpansion", "CodeKataBinomialExpansion\CodeKataBinomialExpansion.csproj", "{F16F071F-4F47-4240-A828-4C5EC970E3EA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeKataBinomialExpansion.Specs", "CodeKataBinomialExpansion.Specs\CodeKataBinomialExpansion.Specs.csproj", "{AFF26E4C-D4F3-47EB-9762-448B617C306B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F16F071F-4F47-4240-A828-4C5EC970E3EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F16F071F-4F47-4240-A828-4C5EC970E3EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F16F071F-4F47-4240-A828-4C5EC970E3EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F16F071F-4F47-4240-A828-4C5EC970E3EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AFF26E4C-D4F3-47EB-9762-448B617C306B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AFF26E4C-D4F3-47EB-9762-448B617C306B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AFF26E4C-D4F3-47EB-9762-448B617C306B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AFF26E4C-D4F3-47EB-9762-448B617C306B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7EA7C441-0C76-4BC8-9A58-94CC064D46D0}
+	EndGlobalSection
+EndGlobal
