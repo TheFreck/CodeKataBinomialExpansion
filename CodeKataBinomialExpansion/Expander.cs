@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using System.Text.RegularExpressions;
 
 namespace CodeKataBinomialExpansion
 {
@@ -11,28 +6,74 @@ namespace CodeKataBinomialExpansion
     {
         public static string Expand(string expr)
         {
-            var variables = Parse(expr);
-            var x = variables[0];
-            var y = variables[1];
-            var n = variables[2];
-            if (variables.LastOrDefault() == 0) return "1";
-            var coefficients = FindCoefficients((int)n);
-            var output = String.Empty;
-            for(var i=0; i<=n; i++)
+            Console.WriteLine(expr);
+            var symbol = Regex.Match(expr, "[A-Za-z]").Value;
+            var xMatch = Regex.Match(expr, "(?<=\\()(.*)(?=[A-Za-z])").Value;
+            var x = Decimal.Parse(xMatch != "" ? xMatch : "1");
+            var yMatch = Regex.Match(expr, "(?<=[A-Za-z])(.*)(?=\\))").Value;
+            var y = Decimal.Parse(yMatch != "" ? yMatch : "0");
+            var nMatch = Regex.Match(expr, "[^^]*$").Value;
+            var n = int.Parse(nMatch != "" ? nMatch : "0");
+            if (n == 0) return "1";
+            if(n == 1) return Regex.Match(expr,"(?<=\\()(.*)(?=\\))").Value;
+            var coefficients = FindCoefficients(n);
+            var output = string.Empty;
+            for (var i = 0; i <= n; i++)
             {
-                var sign = coefficients[i] < 0 ? "-" : "+";
-                var coefficient = (coefficients[i] != 1 && n-i != 0) ? coefficients[i].ToString() : n-i==0 ? "1" : "";
-                var variable = (coefficients[i] != 0 && n-i > 1) ? "x^" : (coefficients[i] != 0 && n-i > 0) ? "x" : "";
-                var exponent = (coefficients[i] != 0 && n-i > 1) ? (n - i).ToString() : "";
-                output += $"{sign}{coefficient}{variable}{exponent}";
+                var sign = "";
+                if (n % 2 == 0)
+                {
+                    if ((x >= 0 && y >= 0) || (x < 0 && y < 0)) sign = "+";
+                    if (x >= 0 && y < 0 && i % 2 == 0) sign = "+";
+                    if (x >= 0 && y < 0 && i % 2 != 0) sign = "-";
+                    if (x < 0 && y >= 0 && i % 2 == 0) sign = "+";
+                    if (x < 0 && y >= 0 && i % 2 != 0) sign = "-";
+                }
+                else
+                {
+                    if (x >= 0 && y >= 0) sign = "+";
+                    if (x < 0 && y < 0) sign = "-";
+                    if (x >= 0 && y < 0 && i % 2 == 0) sign = "+";
+                    if (x >= 0 && y < 0 && i % 2 != 0) sign = "-";
+                    if (x < 0 && y >= 0 && i % 2 == 0) sign = "-";
+                    if (x < 0 && y >= 0 && i % 2 != 0) sign = "+";
+                }
+                
+
+                var coefficientVal = "";
+                var variable = (coefficients[i] != 0 && n - i > 1) ? $"{symbol}^" : (coefficients[i] != 0 && n - i > 0) ? $"{symbol}" : "";
+                var exponent = (coefficients[i] != 0 && n - i > 1) ? (n - i).ToString() : "";
+                if(x>=0 && y >= 0)
+                {
+                    if (n - i > 0) coefficientVal = (Math.Pow((double)x, (double)n-i) * Math.Pow((double)y, (double)i) * coefficients[i]).ToString();
+                    else coefficientVal = i!=0 ? Math.Pow((double)y,(double)n).ToString() : "";
+                    if(coefficientVal == "1" && i != n) coefficientVal = "";
+                }
+                else if(x<0 && y < 0)
+                {
+                    coefficientVal = Math.Abs(Math.Pow((double)x, (double)n-i) * Math.Pow((double)y, (double)i) * coefficients[i]).ToString();
+                    if (coefficientVal == "1" && i != n) coefficientVal = "";
+                }
+                else if(x>=0 && y < 0)
+                {
+                    coefficientVal = Math.Abs(Math.Pow((double)x, (double)n-i) * Math.Pow((double)y, (double)i) * coefficients[i]).ToString();
+                    if (coefficientVal == "1" && i != n) coefficientVal = "";
+                }
+                else if(x<0 && y >= 0)
+                {
+                    coefficientVal = Math.Abs(Math.Pow((double)x, (double)n-i) * Math.Pow((double)y, (double)i) * coefficients[i]).ToString();
+                    if (coefficientVal == "1" && i != n) coefficientVal = "";
+                }
+                output += $"{sign}{coefficientVal}{variable}{exponent}";
             }
+            Console.WriteLine(output.Trim('+'));
             return output.Trim('+');
         }
 
         public static int Factorialize(int f)
         {
             var fFact = 1;
-            for(var i=2; i<=f; i++)
+            for (var i = 2; i <= f; i++)
             {
                 fFact *= i;
             }
@@ -42,11 +83,11 @@ namespace CodeKataBinomialExpansion
         public static int[] FindCoefficients(int n)
         {
             var nFact = Factorialize(n);
-            var coefficients = new int[n+1];
-            for(var k=0; k <= n; k++)
+            var coefficients = new int[n + 1];
+            for (var k = 0; k <= n; k++)
             {
                 var kFact = Factorialize(k);
-                var nkFact = Factorialize(n-k);
+                var nkFact = Factorialize(n - k);
                 if (kFact * nkFact == 0) coefficients[k] = 1;
                 else coefficients[k] = nFact / (kFact * nkFact);
             }
@@ -55,11 +96,12 @@ namespace CodeKataBinomialExpansion
 
         public static decimal[] Parse(string v)
         {
-            var x = Regex.Match(v, "(?<=\\()(.*)(?=x)");
-            var y = Regex.Match(v, "(?<=x)(.*)(?=\\))");
-            var n = Regex.Match(v, "[^^]*$");
-            
-            return new decimal[] { Decimal.Parse(x.Value != "" ? x.Value : "1"), Decimal.Parse(y.Value != "" ? y.Value : "0"), Decimal.Parse(n.Value != "" ? n.Value : "0") };
+            var symbol = Regex.Match(v, "[A - Za - z]").Value;
+            var x = Regex.Match(v, "(?<=\\()(.*)(?=[A-Za-z])").Value;
+            var y = Regex.Match(v, "(?<=[A-Za-z])(.*)(?=\\))").Value;
+            var n = Regex.Match(v, "[^^]*$").Value;
+
+            return new decimal[] { Decimal.Parse(x != "" ? x : "1"), Decimal.Parse(y != "" ? y : "0"), Decimal.Parse(n != "" ? n : "0") };
         }
     }
 

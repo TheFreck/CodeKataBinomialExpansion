@@ -56,17 +56,36 @@ namespace CodeKataBinomialExpansion.Specs
         Establish context = () =>
         {
             inputs = new string[]{
-                "(x+1)^2",
-                "(x-1)^0",
-                "(x-1)^1",
-                "(x-1)^2",
+                "(a+1)^2",
+                "(b-1)^0",
+                "(c-1)^1",
+                "(d-1)^2",
+                "(2e+3)^3",
+                "(2f-3)^3",
+                "(-2g+3)^3",
+                "(-2h-3)^3",
+                "(-5m+3)^4",
+                "(5n-3)^4",
+                "(-5m+3)^4",
+                "(-10x+8)^3",
+                "(-12a+1)^7",
+
             };
             expected = new string[]
             {
-                "x^2+2x+1",
+                "a^2+2a+1",
                 "1",
-                "x-1",
-                "x^2-2x+1",
+                "c-1",
+                "d^2-2d+1",
+                "8e^3+36e^2+54e+27",
+                "8f^3-36f^2+54f-27",
+                "-8g^3+36g^2-54g+27",
+                "-8h^3-36h^2-54h-27",
+                "625m^4-1500m^3+1350m^2-540m+81",
+                "625n^4-1500n^3+1350n^2-540n+81",
+                "625m^4-1500m^3+1350m^2-540m+81",
+                "-1000x^3+2400x^2-1920x+512",
+                "-35831808a^7+20901888a^6-5225472a^5+725760a^4-60480a^3+3024a^2-84a+1",
             };
             answers = new string[inputs.Length];
         };
@@ -74,6 +93,44 @@ namespace CodeKataBinomialExpansion.Specs
         Because of = () =>
         {
             for(var i=0; i < inputs.Length; i++)
+            {
+                answers[i] = Expander.Expand(inputs[i]);
+            }
+        };
+
+        It Should_Return_Values_In_A_String_Array = () => answers.ShouldEqual(expected);
+        It Should_Return_An_Answer_For_Each_Input = () =>
+        {
+            for (var i = 0; i < answers.Length; i++)
+            {
+                answers[i].ShouldEqual(expected[i]);
+            }
+        };
+
+        private static string[] inputs;
+        private static string[] expected;
+        private static string[] answers;
+    }
+
+    public class When_Expanding_And_Y_Is_Zero
+    {
+        Establish context = () =>
+        {
+            inputs = new string[]
+            {
+                "(9t-0)^2",
+
+            };
+            expected = new string[]
+            {
+                "81t^2"
+            };
+            answers = new string[inputs.Length];
+        };
+
+        Because of = () =>
+        {
+            for (var i = 0; i < inputs.Length; i++)
             {
                 answers[i] = Expander.Expand(inputs[i]);
             }
