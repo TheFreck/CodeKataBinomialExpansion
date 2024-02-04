@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Numerics;
+using System.Text.RegularExpressions;
 
 namespace CodeKataBinomialExpansion
 {
@@ -9,13 +10,14 @@ namespace CodeKataBinomialExpansion
             Console.WriteLine(expr);
             var symbol = Regex.Match(expr, "[A-Za-z]").Value;
             var xMatch = Regex.Match(expr, "(?<=\\()(.*)(?=[A-Za-z])").Value;
-            var x = Decimal.Parse(xMatch != "" ? xMatch : "1");
+            var x = BigInteger.Parse(xMatch == "" ? "1" : xMatch == "-" ? "-1" : xMatch);
             var yMatch = Regex.Match(expr, "(?<=[A-Za-z])(.*)(?=\\))").Value;
-            var y = Decimal.Parse(yMatch != "" ? yMatch : "0");
+            var y = BigInteger.Parse(yMatch != "" ? yMatch : "0");
             var nMatch = Regex.Match(expr, "[^^]*$").Value;
             var n = int.Parse(nMatch != "" ? nMatch : "0");
             if (n == 0) return "1";
             if(n == 1) return Regex.Match(expr,"(?<=\\()(.*)(?=\\))").Value;
+            if (y == 0) return $"{BigInteger.Pow(x, n)}{symbol}^{n}";
             var coefficients = FindCoefficients(n);
             var output = string.Empty;
             for (var i = 0; i <= n; i++)
@@ -45,23 +47,23 @@ namespace CodeKataBinomialExpansion
                 var exponent = (coefficients[i] != 0 && n - i > 1) ? (n - i).ToString() : "";
                 if(x>=0 && y >= 0)
                 {
-                    if (n - i > 0) coefficientVal = (Math.Pow((double)x, (double)n-i) * Math.Pow((double)y, (double)i) * coefficients[i]).ToString();
-                    else coefficientVal = i!=0 ? Math.Pow((double)y,(double)n).ToString() : "";
+                    if (n - i > 0) coefficientVal = (BigInteger.Pow(x, n-i) * BigInteger.Pow(y, i) * coefficients[i]).ToString();
+                    else coefficientVal = i!=0 ? BigInteger.Pow(y,n).ToString() : "";
                     if(coefficientVal == "1" && i != n) coefficientVal = "";
                 }
                 else if(x<0 && y < 0)
                 {
-                    coefficientVal = Math.Abs(Math.Pow((double)x, (double)n-i) * Math.Pow((double)y, (double)i) * coefficients[i]).ToString();
+                    coefficientVal = BigInteger.Abs(BigInteger.Pow(x, n-i) * BigInteger.Pow(y, i) * coefficients[i]).ToString();
                     if (coefficientVal == "1" && i != n) coefficientVal = "";
                 }
                 else if(x>=0 && y < 0)
                 {
-                    coefficientVal = Math.Abs(Math.Pow((double)x, (double)n-i) * Math.Pow((double)y, (double)i) * coefficients[i]).ToString();
+                    coefficientVal = BigInteger.Abs(BigInteger.Pow(x, n-i) * BigInteger.Pow(y, i) * coefficients[i]).ToString();
                     if (coefficientVal == "1" && i != n) coefficientVal = "";
                 }
                 else if(x<0 && y >= 0)
                 {
-                    coefficientVal = Math.Abs(Math.Pow((double)x, (double)n-i) * Math.Pow((double)y, (double)i) * coefficients[i]).ToString();
+                    coefficientVal = BigInteger.Abs(BigInteger.Pow(x, n-i) * BigInteger.Pow(y, i) * coefficients[i]).ToString();
                     if (coefficientVal == "1" && i != n) coefficientVal = "";
                 }
                 output += $"{sign}{coefficientVal}{variable}{exponent}";
@@ -70,9 +72,9 @@ namespace CodeKataBinomialExpansion
             return output.Trim('+');
         }
 
-        public static int Factorialize(int f)
+        public static BigInteger Factorialize(int f)
         {
-            var fFact = 1;
+            BigInteger fFact = 1;
             for (var i = 2; i <= f; i++)
             {
                 fFact *= i;
@@ -80,16 +82,17 @@ namespace CodeKataBinomialExpansion
             return fFact;
         }
 
-        public static int[] FindCoefficients(int n)
+        public static BigInteger[] FindCoefficients(int n)
         {
             var nFact = Factorialize(n);
-            var coefficients = new int[n + 1];
+            var coefficients = new BigInteger[n + 1];
             for (var k = 0; k <= n; k++)
             {
                 var kFact = Factorialize(k);
                 var nkFact = Factorialize(n - k);
+                var denominator = (kFact * nkFact);
                 if (kFact * nkFact == 0) coefficients[k] = 1;
-                else coefficients[k] = nFact / (kFact * nkFact);
+                else coefficients[k] = nFact / denominator;
             }
             return coefficients;
         }
