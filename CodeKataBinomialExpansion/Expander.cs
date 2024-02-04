@@ -7,7 +7,6 @@ namespace CodeKataBinomialExpansion
     {
         public static string Expand(string expr)
         {
-            Console.WriteLine(expr);
             var symbol = Regex.Match(expr, "[A-Za-z]").Value;
             var xMatch = Regex.Match(expr, "(?<=\\()(.*)(?=[A-Za-z])").Value;
             var x = BigInteger.Parse(xMatch == "" ? "1" : xMatch == "-" ? "-1" : xMatch);
@@ -68,7 +67,6 @@ namespace CodeKataBinomialExpansion
                 }
                 output += $"{sign}{coefficientVal}{variable}{exponent}";
             }
-            Console.WriteLine(output.Trim('+'));
             return output.Trim('+');
         }
 
